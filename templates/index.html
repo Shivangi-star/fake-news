@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>forensic. — AI Credibility Verifier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <header class="topbar">
+    <a href="#" class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-name">forensic.</span>
+      <span class="brand-sub">AI · VERIFIER · V2</span>
+    </a>
+    <nav class="topnav">
+      <a href="#workbench">Workbench</a>
+      <a href="#method">Method</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <span class="model-pill">{{ model_label | upper }}</span>
+  </header>
+
+  <main>
+    <section id="workbench" class="hero">
+      <span class="mission-tag">MISSION</span>
+      <h1>Verify images and news with forensic precision.</h1>
+      <p class="hero-lead">
+        Upload a photo or paste a headline. We inspect pixel-level artefacts, cross-check the claim,
+        identify the underlying incident and its location, and return a credibility score you can defend.
+      </p>
+
+      <div class="scan-card">
+        <div class="scan-tabs" role="tablist">
+          <button type="button" class="scan-tab active" data-tab="image" role="tab">Image scan</button>
+          <button type="button" class="scan-tab" data-tab="text" role="tab">Text scan</button>
+        </div>
+
+        <div id="panel-image" class="scan-panel" role="tabpanel">
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="image-input" accept="image/jpeg,image/png,image/webp" hidden />
+            <div class="dropzone-inner" id="dropzone-inner">
+              <p>Drop or select an image</p>
+              <span>JPEG, PNG or WEBP · max 10 MB</span>
+            </div>
+            <img id="image-preview" class="preview hidden" alt="Preview" />
+          </div>
+          <label class="field-label" for="image-caption">Caption / context (optional)</label>
+          <textarea id="image-caption" rows="3" placeholder="Paste the caption or claim that accompanies this image…"></textarea>
+          <button type="button" id="btn-scan-image" class="btn-scan" disabled>
+            <span class="btn-label">Run forensic scan</span>
+            <span class="spinner hidden"></span>
+          </button>
+        </div>
+
+        <div id="panel-text" class="scan-panel hidden" role="tabpanel">
+          <label class="field-label" for="news-text">Headline, article, or social post</label>
+          <textarea id="news-text" rows="6" placeholder="Paste the claim you want verified…"></textarea>
+          <button type="button" id="btn-scan-text" class="btn-scan">
+            <span class="btn-label">Run forensic scan</span>
+            <span class="spinner hidden"></span>
+          </button>
+        </div>
+      </div>
+
+      <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+      <section id="results" class="results hidden" aria-live="polite">
+        <div class="score-panel">
+          <div class="score-ring" id="score-ring">
+            <span id="score-value">—</span>
+            <small>credibility</small>
+          </div>
+          <div class="verdict-block">
+            <span id="verdict-badge" class="verdict-badge">—</span>
+            <p id="summary" class="summary"></p>
+            <p id="incident-loc" class="meta-line hidden"></p>
+          </div>
+        </div>
+
+        <div id="image-meta" class="image-meta hidden">
+          <h3>Image description</h3>
+          <p id="image-description"></p>
+          <p class="date-row"><strong>Created / published:</strong> <span id="image-date"></span></p>
+          <p id="date-source" class="muted"></p>
+        </div>
+
+        <h3 class="passes-title">Three passes. One verdict.</h3>
+        <div class="passes-grid">
+          <article class="pass-card">
+            <h4>Pixel forensics</h4>
+            <p class="pass-score" id="pixel-score">—</p>
+            <ul id="pixel-findings"></ul>
+          </article>
+          <article class="pass-card">
+            <h4>Claim reasoning</h4>
+            <p class="pass-score" id="claim-score">—</p>
+            <ul id="claim-findings"></ul>
+          </article>
+          <article class="pass-card wide">
+            <h4>Weighted verdict</h4>
+            <p id="rationale"></p>
+            <h5>Red flags</h5>
+            <ul id="red-flags"></ul>
+            <h5>Suggested actions</h5>
+            <ul id="suggested-actions"></ul>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section id="method" class="method">
+      <h2>Three passes. One verdict.</h2>
+      <div class="method-grid">
+        <article>
+          <h3>Pixel forensics</h3>
+          <p>Vision model scans for splicing, warped geometry, AI-generation artefacts, lighting inconsistencies, and impossible reflections.</p>
+        </article>
+        <article>
+          <h3>Claim reasoning</h3>
+          <p>Any caption or headline is tested against world knowledge — loaded language, internal contradictions, verifiable specifics.</p>
+        </article>
+        <article>
+          <h3>Weighted verdict</h3>
+          <p>Evidence is reduced to one score (0–100), a Likely Real / Likely Fake / Unverified label, and a rationale you can defend.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="faq" class="faq">
+      <h2>Questions, answered.</h2>
+      <details>
+        <summary>01 How does the forensic scanner decide real vs fake?</summary>
+        <p>Three passes — pixel forensics, claim reasoning, and a weighted verdict — produce a 0–100 credibility score and a label you can explain.</p>
+      </details>
+      <details>
+        <summary>02 Which file formats can I upload?</summary>
+        <p>Only JPEG, PNG or WEBP images are supported. Image must be under 10 MB.</p>
+      </details>
+      <details>
+        <summary>03 Is a high score a guarantee the content is authentic?</summary>
+        <p>No. This is AI-assisted analysis. Always verify with primary sources and trusted fact-checkers.</p>
+      </details>
+      <details>
+        <summary>04 Do you store the media I upload?</summary>
+        <p>No. Files are processed in memory for the scan and are not saved to disk on this server.</p>
+      </details>
+      <details>
+        <summary>05 Can the scanner be wrong?</summary>
+        <p>Yes. Novel edits, missing context, or outdated training can produce errors. Treat results as one input in your review.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Powered by Google Gemini · Local forensic verifier inspired by AI credibility check workflows.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
